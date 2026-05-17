@@ -1,0 +1,40 @@
+name: LINE AUTO SEND
+
+on:
+  schedule:
+    # 12:15 VN
+    - cron: '15 5 * * *'
+
+    # 15:15 VN
+    - cron: '15 8 * * *'
+
+    # 18:15 VN
+    - cron: '15 11 * * *'
+
+    # 23:15 VN
+    - cron: '15 16 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  send-line-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: CHECKOUT
+        uses: actions/checkout@v4
+
+      - name: SETUP PYTHON
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: INSTALL LIBRARY
+        run: |
+          pip install -r requirements.txt
+
+      - name: RUN BOT
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          GROUP_ID: ${{ secrets.GROUP_ID }}
+        run: python send.py
