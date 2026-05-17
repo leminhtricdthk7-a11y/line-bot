@@ -1,36 +1,22 @@
-from linebot import LineBotApi
-from linebot.models import TextSendMessage
 import os
-from datetime import datetime
+import requests
 
-LINE_TOKEN = os.getenv("LINE_TOKEN")
-GROUP_ID = os.getenv("GROUP_ID")
+TOKEN = os.getenv("LINE_TOKEN")
 
-line_bot_api = LineBotApi(LINE_TOKEN)
+headers = {
+    "Authorization": f"Bearer {TOKEN}",
+    "Content-Type": "application/json"
+}
 
-MESSAGE = """thidua camera
-thidua dh
-thidua pkdh
-thidua tainghe
-thidua psdp"""
+data = {
+    "to": "GROUP_ID_HERE",
+    "messages": [
+        {"type": "text", "text": "Hello from GitHub Actions"}
+    ]
+}
 
-def send_message():
-    try:
-        line_bot_api.push_message(
-            GROUP_ID,
-            TextSendMessage(text=MESSAGE)
-        )
-
-        print("===================================")
-        print("SEND SUCCESS")
-        print(datetime.now())
-        print("===================================")
-
-    except Exception as e:
-        print("===================================")
-        print("SEND ERROR")
-        print(e)
-        print("===================================")
-
-if __name__ == "__main__":
-    send_message()
+requests.post(
+    "https://api.line.me/v2/bot/message/push",
+    headers=headers,
+    json=data
+)

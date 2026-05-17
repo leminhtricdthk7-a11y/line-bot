@@ -1,40 +1,31 @@
-name: LINE AUTO SEND
+name: LINE Bot Auto Send
 
 on:
+  workflow_dispatch:   # cho phép bấm Run workflow
+  push:
+    branches: [ main ]  # push code là chạy
   schedule:
-    # 12:15 VN
-    - cron: '15 5 * * *'
-
-    # 15:15 VN
-    - cron: '15 8 * * *'
-
-    # 18:15 VN
-    - cron: '15 11 * * *'
-
-    # 23:15 VN
-    - cron: '15 16 * * *'
-
-  workflow_dispatch:
+    - cron: "*/10 * * * *"  # chạy mỗi 10 phút (UTC)
 
 jobs:
-  send-line-message:
+  run-bot:
     runs-on: ubuntu-latest
 
     steps:
-      - name: CHECKOUT
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: SETUP PYTHON
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.10"
 
-      - name: INSTALL LIBRARY
+      - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: RUN BOT
+      - name: Run bot script
         env:
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
-          GROUP_ID: ${{ secrets.GROUP_ID }}
         run: python send.py
